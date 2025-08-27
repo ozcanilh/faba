@@ -183,18 +183,47 @@ open cypress/reports/mochawesome/index.html
 - **Videos**: `cypress/videos/`
 - **Performance Reports**: `performance/reports/`
 
-## Development & Debugging
-### Code Formatting
+## 🛠️ Development & Debugging
+
+### Code Formatting with Prettier
+This project uses **Prettier** for consistent code formatting across all JavaScript and JSON files.
+
+#### Configuration
+- **Configuration File**: `.prettierrc`
+- **Ignore File**: `.prettierignore`
+- **Settings**:
+  - Semi-colons: `true`
+  - Single quotes: `true`
+  - Print width: `100`
+  - Tab width: `2`
+  - Trailing commas: `es5`
+
+#### Available Commands
 ```bash
 # Format all files
 npm run format
 
-# Check formatting
+# Check formatting without making changes
 npm run format:check
 
 # Format only Cypress files
 npm run format:cypress
 ```
+
+#### Manual Formatting
+```bash
+# Format specific files
+npx prettier --write "cypress/**/*.js"
+npx prettier --write "*.json"
+
+# Check specific files
+npx prettier --check "cypress/**/*.js"
+```
+
+#### IDE Integration
+- **VS Code**: Install "Prettier - Code formatter" extension
+- **IntelliJ IDEA**: Enable Prettier in Settings → Languages & Frameworks → JavaScript → Prettier
+- **Auto-format on save**: Recommended for consistent formatting
 
 ### API Testing & Mocking
 ```bash
