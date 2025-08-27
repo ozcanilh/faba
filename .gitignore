@@ -9,3 +9,14 @@ cypress/downloads/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# IDE Files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS Files
+Thumbs.db
+.DS_Store
