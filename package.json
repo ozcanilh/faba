@@ -1,5 +1,5 @@
 {
-  "name": "cypress-ecommerce-tests",
+  "name": "faba",
   "version": "1.0.0",
   "description": "Cypress e-commerce testing with Page Object Model",
   "main": "index.js",

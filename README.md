@@ -23,7 +23,7 @@ A simple testing framework for e-commerce search functionality using Cypress and
 ```bash
 # Clone repository
 git clone <repository-url>
-cd faba-copy
+cd faba
 
 # Install dependencies
 npm install
