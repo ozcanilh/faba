@@ -32,7 +32,7 @@ npm install
 npm run cypress:open
 ```
 
-## 🧪 Cypress Testing
+## Cypress Testing
 ### Running Tests
 #### Interactive Mode (Development)
 ```bash
@@ -116,7 +116,13 @@ choco install k6
 ### Running Performance Tests
 
 **⚠️ Important: Performance tests require API server to be running**
-
+### API Testing & Mocking
+```bash
+# Start dummy API server for testing (required for k6 tests)
+npm run api:start
+# API will be available at http://localhost:3001
+# Keep this running while performing k6 tests
+```
 #### Step 1: Start API Server (Terminal 1)
 ```bash
 # Start dummy API server for testing
@@ -183,7 +189,7 @@ open cypress/reports/mochawesome/index.html
 - **Videos**: `cypress/videos/`
 - **Performance Reports**: `performance/reports/`
 
-## 🛠️ Development & Debugging
+## Development & Debugging
 
 ### Code Formatting with Prettier
 This project uses **Prettier** for consistent code formatting across all JavaScript and JSON files.
@@ -224,11 +230,3 @@ npx prettier --check "cypress/**/*.js"
 - **VS Code**: Install "Prettier - Code formatter" extension
 - **IntelliJ IDEA**: Enable Prettier in Settings → Languages & Frameworks → JavaScript → Prettier
 - **Auto-format on save**: Recommended for consistent formatting
-
-### API Testing & Mocking
-```bash
-# Start dummy API server for testing (required for k6 tests)
-npm run api:start
-# API will be available at http://localhost:3001
-# Keep this running while performing k6 tests
-```
