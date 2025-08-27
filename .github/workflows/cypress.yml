@@ -1,0 +1,203 @@
+name: Cypress E-commerce Tests
+
+on:
+  schedule:
+    - cron: '0 5 * * *'   # scheduled run at 05:00 UTC daily
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Choose environment to run tests"
+        type: choice
+        options:
+          - production
+          - staging
+        default: staging
+      all:
+        description: "Run All tests"
+        type: boolean
+        default: true
+      search:
+        description: "Run Search tests"
+        type: boolean
+        default: false
+
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+  repository_dispatch:
+    types: [run-cypress]
+
+jobs:
+  log-unique-id:
+    name: Log unique ID from repository dispatch payload
+    runs-on: ubuntu-latest
+    if: github.event_name == 'repository_dispatch'
+    steps:
+      - name: Log Unique ID from repository dispatch event
+        run: |
+          echo "Unique ID: ${{ github.event.client_payload.unique_id }}"
+
+  run-cypress:
+    name: Run Cypress E-commerce Tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1, 2] # for parallel execution
+    outputs:
+      modules: ${{ steps.determine-specs.outputs.modules }}
+      CYPRESS_ENV: ${{ env.CYPRESS_ENV }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check free disk space (before tests)
+        run: df -h
+
+      - name: Check free memory (before tests)
+        run: free -h
+
+      - name: Set ENV based on schedule time or manual input
+        id: set-env
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            CYPRESS_ENV="production"
+          elif [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            CYPRESS_ENV="${{ github.event.inputs.environment }}"
+          else
+            CYPRESS_ENV="staging"
+          fi
+          echo "CYPRESS_ENV=$CYPRESS_ENV" >> $GITHUB_ENV
+          echo "github.event.inputs.environment: ${{ github.event.inputs.environment }}"
+          echo "github.event_name: ${{ github.event_name }}"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Determine Spec Files
+        id: determine-specs
+        run: |
+          SPEC_FILES=""
+          MODULES=""
+          if [ "${{ github.event.inputs.all }}" == "true" ] || [ "${{ github.event_name }}" == "schedule" ] || [ "${{ github.event_name }}" == "push" ] || [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "Running all tests"
+            SPEC_FILES="cypress/e2e/tests/**/*.cy.js"
+            MODULES="All"
+          else
+            [ "${{ github.event.inputs.search }}" == "true" ] && SPEC_FILES+=",cypress/e2e/tests/search.cy.js" && MODULES+=",Search"
+            SPEC_FILES="${SPEC_FILES#,}"
+            MODULES="${MODULES#,}"
+          fi
+          echo "SPEC_FILES=$SPEC_FILES" >> $GITHUB_ENV
+          echo "MODULES=$MODULES" >> $GITHUB_ENV
+          echo "modules=$MODULES" >> $GITHUB_OUTPUT
+
+      - name: Run Cypress Tests
+        if: always()
+        uses: cypress-io/github-action@v6
+        with:
+          browser: chrome
+          spec: ${{ env.SPEC_FILES }}
+          config: baseUrl=https://www.trendyol.com
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CYPRESS_ENV: ${{ env.CYPRESS_ENV }}
+
+      - name: Upload Mochawesome JSON Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-json-report-${{ matrix.containers }}
+          path: cypress/reports/mochawesome/*.json
+          retention-days: 2
+
+      - name: Upload screenshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-screenshots-${{ matrix.containers }}
+          path: cypress/screenshots
+          retention-days: 2
+          if-no-files-found: ignore
+
+      - name: Upload videos
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-videos-${{ matrix.containers }}
+          path: cypress/videos
+          retention-days: 2
+          if-no-files-found: ignore
+
+  merge-reports:
+    name: Merge Cypress Reports
+    runs-on: ubuntu-latest
+    needs: run-cypress
+    if: always()
+    env:
+      MODULES: ${{ needs.run-cypress.outputs.modules }}
+      CYPRESS_ENV: ${{ needs.run-cypress.outputs.CYPRESS_ENV }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download JSON Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: reports/json
+          pattern: cypress-json-report-*
+
+      - name: Merge JSON Reports
+        run: |
+          mkdir -p cypress/reports/html cypress/html
+          npx mochawesome-merge "reports/json/**/*.json" > cypress/reports/html/merged-report.json
+
+      - name: Generate Unified HTML Report
+        run: |
+          npx marge cypress/reports/html/merged-report.json --reportDir cypress/html --reportFilename index_${{ github.run_number }}.html --inline
+
+      - name: Upload Merged HTML Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cypress-merged-html-report
+          path: cypress/html
+          retention-days: 7
+
+      - name: Deploy Report to GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: cypress/html
+          keep_files: true
+
+      - name: Send Slack Notification
+        if: always()
+        run: |
+          npm install axios
+          node ./scripts/send_slack_message.js
+        env:
+          TEST_TYPE: 'CYPRESS'
+          RUN_BY: ${{ github.actor }}
+          GITHUB_RUN_NUMBER: ${{ github.run_number }}
+          MODULES: ${{ env.MODULES }}
+          CYPRESS_ENV: ${{ env.CYPRESS_ENV }}
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

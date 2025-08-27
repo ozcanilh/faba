@@ -1,0 +1,43 @@
+{
+  "validSearchTerms": {
+    "shoes": {
+      "term": "shoes",
+      "expectedResults": true,
+      "category": "Fashion"
+    },
+    "running_shoes": {
+      "term": "running shoes",
+      "expectedResults": true,
+      "category": "Sports"
+    },
+    "nike_shoes": {
+      "term": "nike shoes",
+      "expectedResults": true,
+      "category": "Fashion"
+    }
+  },
+  "invalidSearchTerms": {
+    "nonsense": {
+      "term": "asdfghjkl123xyz",
+      "expectedResults": false,
+      "expectedMessage": "No results found"
+    },
+    "gibberish": {
+      "term": "qwertpoiuylkjhgfdsamnbvcxz",
+      "expectedResults": false,
+      "expectedMessage": "No results found"
+    }
+  },
+  "filters": {
+    "priceRange": {
+      "min": 50,
+      "max": 200
+    },
+    "sortOptions": ["Price: Low to High", "Price: High to Low", "Avg. Customer Review"]
+  },
+  "testData": {
+    "timeout": 10000,
+    "maxRetries": 3,
+    "waitTime": 2000
+  }
+}

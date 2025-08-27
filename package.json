@@ -1,0 +1,55 @@
+{
+  "name": "cypress-ecommerce-tests",
+  "version": "1.0.0",
+  "description": "Cypress e-commerce testing with Page Object Model",
+  "main": "index.js",
+  "scripts": {
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "test": "cypress run",
+    "test:headed": "cypress run --headed",
+    "test:chrome": "cypress run --browser chrome",
+    "test:mobile": "cypress run --config viewportWidth=375,viewportHeight=667",
+    "test:tablet": "cypress run --config viewportWidth=768,viewportHeight=1024",
+    "test:desktop": "cypress run --config viewportWidth=1280,viewportHeight=720",
+    "test:desktop:electron": "cypress run --browser electron --config viewportWidth=1280,viewportHeight=720",
+    "test:desktop:chrome": "cypress run --browser chrome --config viewportWidth=1280,viewportHeight=720",
+    "test:mobile:open": "cypress open --config viewportWidth=375,viewportHeight=667",
+    "test:tablet:open": "cypress open --config viewportWidth=768,viewportHeight=1024",
+    "test:desktop:electron:open": "cypress open --browser electron",
+    "test:desktop:chrome:open": "cypress open --browser chrome",
+    "test:cross-device": "npm run test:mobile && npm run test:tablet && npm run test:desktop",
+    "test:cross-browser": "npm run test:desktop:electron && npm run test:desktop:chrome",
+    "test:mobile:chrome": "cypress run --browser chrome --config viewportWidth=375,viewportHeight=667",
+    "test:report": "cypress run && npm run report:merge && npm run report:generate",
+    "report:merge": "mochawesome-merge cypress/reports/mochawesome/*.json > cypress/reports/mochawesome/merged-report.json",
+    "report:generate": "marge cypress/reports/mochawesome/merged-report.json --reportDir cypress/reports/mochawesome --inline",
+    "clean:reports": "rm -rf cypress/reports/mochawesome/*",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "format:cypress": "prettier --write cypress/**/*.js",
+    "api:start": "node performance/dummy-api/server.js",
+    "perf:test": "k6 run performance/k6/search-load-test.js",
+    "perf:jmeter": "./performance/jmeter/run-test.sh"
+  },
+  "keywords": [
+    "cypress",
+    "testing",
+    "e-commerce",
+    "page-object-model"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cypress": "^13.6.0"
+  },
+  "devDependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "k6": "^0.0.0",
+    "mochawesome": "^7.1.3",
+    "mochawesome-merge": "^5.0.0",
+    "mochawesome-report-generator": "^6.2.0",
+    "prettier": "^3.6.2"
+  }
+}

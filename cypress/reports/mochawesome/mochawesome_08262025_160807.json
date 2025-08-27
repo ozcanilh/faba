@@ -1,0 +1,244 @@
+{
+  "stats": {
+    "suites": 1,
+    "tests": 1,
+    "passes": 0,
+    "pending": 0,
+    "failures": 1,
+    "start": "2025-08-26T13:07:42.393Z",
+    "end": "2025-08-26T13:08:07.523Z",
+    "duration": 25130,
+    "testsRegistered": 8,
+    "passPercent": 0,
+    "pendingPercent": 0,
+    "other": 0,
+    "hasOther": false,
+    "skipped": 7,
+    "hasSkipped": true
+  },
+  "results": [
+    {
+      "uuid": "a3b498db-a79c-4e03-945b-3a9e675766c7",
+      "title": "",
+      "fullFile": "cypress/e2e/tests/search.cy.js",
+      "file": "cypress/e2e/tests/search.cy.js",
+      "beforeHooks": [],
+      "afterHooks": [],
+      "tests": [],
+      "suites": [
+        {
+          "uuid": "2cef31b6-a65d-4d2b-b01b-52c1bb9053c0",
+          "title": "E-commerce Search Functionality Tests",
+          "fullFile": "",
+          "file": "",
+          "beforeHooks": [],
+          "afterHooks": [],
+          "tests": [
+            {
+              "title": "Searches for product successfully and verifies results",
+              "fullTitle": "E-commerce Search Functionality Tests Searches for product successfully and verifies results",
+              "timedOut": null,
+              "duration": 12179,
+              "state": "failed",
+              "speed": null,
+              "pass": false,
+              "fail": true,
+              "pending": false,
+              "context": null,
+              "code": "// Search for product\ncy.searchProduct(product);\n// Verify search results include at least one result\ncy.verifySearchResults(product);\n// Verify search product appears in results or product descriptions\ncy.verifySearchKeywordInDescription(product);",
+              "err": {
+                "message": "AssertionError: Timed out retrying after 10000ms: expected '<input.vQI670rJ>' to be 'visible'\n\nThis element `<input.vQI670rJ>` is not visible because it has CSS property: `position: fixed` and it's being covered by another element:\n\n`<div class=\"modal\" style=\"transition: opacity 300ms ease-in-out; opacity: 1; background: rgba(0, 0, 0, 0.6);\">...</div>`\n\nBecause this error occurred during a `before each` hook we are skipping all of the remaining tests.",
+                "estack": "AssertionError: Timed out retrying after 10000ms: expected '<input.vQI670rJ>' to be 'visible'\n\nThis element `<input.vQI670rJ>` is not visible because it has CSS property: `position: fixed` and it's being covered by another element:\n\n`<div class=\"modal\" style=\"transition: opacity 300ms ease-in-out; opacity: 1; background: rgba(0, 0, 0, 0.6);\">...</div>`\n\nBecause this error occurred during a `before each` hook we are skipping all of the remaining tests.\n    at Context.eval (webpack://cypress-ecommerce-tests/./cypress/support/e2e.js:18:39)",
+                "diff": null
+              },
+              "uuid": "caef8add-d9cd-41db-881c-fd3ca39a5f67",
+              "parentUUID": "2cef31b6-a65d-4d2b-b01b-52c1bb9053c0",
+              "isHook": false,
+              "skipped": false
+            },
+            {
+              "title": "Verifies price filters apply correctly",
+              "fullTitle": "E-commerce Search Functionality Tests Verifies price filters apply correctly",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const minPrice = 0;\nconst maxPrice = 600;\ncy.searchProduct(product);\n// Wait for results to load\ncy.verifySearchResults(product);\n// Apply Price filter\ncy.applyPriceFilter(minPrice, maxPrice);\ncy.verifyPriceRange(minPrice, maxPrice);",
+              "err": {},
+              "uuid": "5f3cbed0-b245-47da-8074-c6357f4de0bf",
+              "parentUUID": "2cef31b6-a65d-4d2b-b01b-52c1bb9053c0",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "Verifies pagination works correctly",
+              "fullTitle": "E-commerce Search Functionality Tests Verifies pagination works correctly",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.searchProduct(product);\n// Pagination functionality\ncy.verifyPagination();",
+              "err": {},
+              "uuid": "9d83ab1a-e69b-427d-8430-f7863b3ead87",
+              "parentUUID": "2cef31b6-a65d-4d2b-b01b-52c1bb9053c0",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "Verify nonsense query and shows \"no results found\" message",
+              "fullTitle": "E-commerce Search Functionality Tests Verify nonsense query and shows \"no results found\" message",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "// Search for nonsense term\nconst nonsenseQuery = 'invalidproduct';\ncy.searchProduct(nonsenseQuery);\n// Verify no results message appears\ncy.verifyNoSearchResults(nonsenseQuery);",
+              "err": {},
+              "uuid": "676f9f7f-4376-4b72-bb8b-8aae64d3c860",
+              "parentUUID": "2cef31b6-a65d-4d2b-b01b-52c1bb9053c0",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "Verify empty search query",
+              "fullTitle": "E-commerce Search Functionality Tests Verify empty search query",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "cy.searchProduct(' '); // Empty/space search\n// Verify suggestion container appears\ncy.get('data-testid=\"suggestions-container\"').should('be.visible');",
+              "err": {},
+              "uuid": "a9db9fbf-16f0-423b-94e0-cdbf8f312f3f",
+              "parentUUID": "2cef31b6-a65d-4d2b-b01b-52c1bb9053c0",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "Verify special characters in search",
+              "fullTitle": "E-commerce Search Functionality Tests Verify special characters in search",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const specialChars = ['!@#$%^&*()'];\nspecialChars.forEach(chars => {\n  cy.searchProduct(chars);\n  // Verify no results message appears for special characters\n  cy.verifyNoResultsForSpecialChars(chars);\n});",
+              "err": {},
+              "uuid": "56608dd1-ab1d-49f8-917a-3c4828a9f947",
+              "parentUUID": "2cef31b6-a65d-4d2b-b01b-52c1bb9053c0",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "Handles Unicode and international characters",
+              "fullTitle": "E-commerce Search Functionality Tests Handles Unicode and international characters",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const unicodeQueries = ['测试'];\nunicodeQueries.forEach(query => {\n  cy.searchProduct(query);\n  // Verify no results message appears\n  cy.verifyNoSearchResults(query);\n});",
+              "err": {},
+              "uuid": "51de465f-1f19-419b-b350-1a9555e50a04",
+              "parentUUID": "2cef31b6-a65d-4d2b-b01b-52c1bb9053c0",
+              "isHook": false,
+              "skipped": true
+            },
+            {
+              "title": "Handles SQL injection attempts",
+              "fullTitle": "E-commerce Search Functionality Tests Handles SQL injection attempts",
+              "timedOut": null,
+              "duration": 0,
+              "state": "skipped",
+              "speed": null,
+              "pass": false,
+              "fail": false,
+              "pending": false,
+              "context": null,
+              "code": "const sqlInjections = [\"'; DROP TABLE products; --\", \"' OR '1'='1\", \"1' UNION SELECT * FROM users--\"];\nsqlInjections.forEach(injection => {\n  cy.searchProduct(injection);\n});",
+              "err": {},
+              "uuid": "236a3425-33e4-42a9-82bc-00077c1e15da",
+              "parentUUID": "2cef31b6-a65d-4d2b-b01b-52c1bb9053c0",
+              "isHook": false,
+              "skipped": true
+            }
+          ],
+          "suites": [],
+          "passes": [],
+          "failures": [
+            "caef8add-d9cd-41db-881c-fd3ca39a5f67"
+          ],
+          "pending": [],
+          "skipped": [
+            "5f3cbed0-b245-47da-8074-c6357f4de0bf",
+            "9d83ab1a-e69b-427d-8430-f7863b3ead87",
+            "676f9f7f-4376-4b72-bb8b-8aae64d3c860",
+            "a9db9fbf-16f0-423b-94e0-cdbf8f312f3f",
+            "56608dd1-ab1d-49f8-917a-3c4828a9f947",
+            "51de465f-1f19-419b-b350-1a9555e50a04",
+            "236a3425-33e4-42a9-82bc-00077c1e15da"
+          ],
+          "duration": 12179,
+          "root": false,
+          "rootEmpty": false,
+          "_timeout": 2000
+        }
+      ],
+      "passes": [],
+      "failures": [],
+      "pending": [],
+      "skipped": [],
+      "duration": 0,
+      "root": true,
+      "rootEmpty": true,
+      "_timeout": 2000
+    }
+  ],
+  "meta": {
+    "mocha": {
+      "version": "7.0.1"
+    },
+    "mochawesome": {
+      "options": {
+        "quiet": false,
+        "reportFilename": "mochawesome",
+        "saveHtml": true,
+        "saveJson": true,
+        "consoleReporter": "spec",
+        "useInlineDiffs": false,
+        "code": true
+      },
+      "version": "7.1.3"
+    },
+    "marge": {
+      "options": {
+        "reportDir": "cypress/reports/mochawesome",
+        "overwrite": false,
+        "html": true,
+        "json": true,
+        "timestamp": "mmddyyyy_HHMMss"
+      },
+      "version": "6.2.0"
+    }
+  }
+}
